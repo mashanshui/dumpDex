@@ -36,24 +36,21 @@ public class XposedInit implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
         PackerInfo.Type type = PackerInfo.find(lpparam);
-//        if (type == null) {
-//            return;
-//        }
+        if (type == null) {
+            return;
+        }
         final String packageName = lpparam.packageName;
-        Log.e(TAG, "handleLoadPackage: " + packageName);
-        if ("com.broccoli.bh".equals(packageName)) {
-            String path = "/data/data/" + packageName + "/dump";
-            File parent = new File(path);
-            if (!parent.exists() || !parent.isDirectory()) {
-                parent.mkdirs();
-            }
-            log("sdk version:" + Build.VERSION.SDK_INT);
-            if (DeviceUtils.isOreo() || DeviceUtils.isPie() || DeviceUtils.isAndroid10()) {
-                OreoDump.init(lpparam);
-            } else {
-                LowSdkDump.init(lpparam,type);
-            }
-
+        Log.e(TAG, "handleLoadPackage: " + type.getName());
+        String path = "/data/data/" + packageName + "/dump";
+        File parent = new File(path);
+        if (!parent.exists() || !parent.isDirectory()) {
+            parent.mkdirs();
+        }
+        log("sdk version:" + Build.VERSION.SDK_INT);
+        if (DeviceUtils.isOreo() || DeviceUtils.isPie() || DeviceUtils.isAndroid10()) {
+            OreoDump.init(lpparam);
+        } else {
+            LowSdkDump.init(lpparam, type);
         }
     }
 }
